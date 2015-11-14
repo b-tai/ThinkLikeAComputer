@@ -1,8 +1,26 @@
-var display = "";
+// node_example.js - Example showing use of Clarifai node.js API
+
 var Clarifai = require('./clarifai_node.js');
 var clientID = "Ujn2c65_Y-9-FyZRNDg5GTew2n6g5apT1DGh8BX-";
 var clientSecret = "DoOB5xDgVAcZqxuL1M2kXDaulw_sw6LwzY_Qcip8";
+//Clarifai.initAPI(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 Clarifai.initAPI(clientID, clientSecret);
+
+var stdio = require('stdio');
+
+// support some command-line options
+var opts = stdio.getopt( {
+	'print-results' : { description: 'print results'},
+	'print-http' : { description: 'print HTTP requests and responses'},
+	'verbose' : { key : 'v', description: 'verbose output'}
+});
+var verbose = opts["verbose"];
+Clarifai.setVerbose( verbose );
+if( opts["print-http"] ) {
+	Clarifai.setLogHttp( true ) ;
+}
+
+if(verbose) console.log("using CLIENT_ID="+Clarifai._clientId+", CLIENT_SECRET="+Clarifai._clientSecret);
 
 // Setting a throttle handler lets you know when the service is unavailable because of throttling. It will let
 // you know when the service is available again. Note that setting the throttle handler causes a timeout handler to
@@ -33,6 +51,7 @@ function commonResultHandler( err, res ) {
 		}
 	}
 	else {
+		if( opts["print-results"] ) {
 			// if some images were successfully tagged and some encountered errors,
 			// the status_code PARTIAL_ERROR is returned. In this case, we inspect the
 			// status_code entry in each element of res["results"] to evaluate the individual
@@ -44,9 +63,6 @@ function commonResultHandler( err, res ) {
 				// the request completed successfully
 				for( i = 0; i < res.results.length; i++ ) {
 					if( res["results"][i]["status_code"] === "OK" ) {
-						display = 'docid='+res.results[i].docid +
-							' local_id='+res.results[i].local_id +
-							' tags='+res["results"][i].result["tag"]["classes"];
 						console.log( 'docid='+res.results[i].docid +
 							' local_id='+res.results[i].local_id +
 							' tags='+res["results"][i].result["tag"]["classes"] )
@@ -59,9 +75,9 @@ function commonResultHandler( err, res ) {
 					}
 				}
 
-			}		
+			}
+		}			
 	}
-	callback();
 }
 
 // exampleTagSingleURL() shows how to request the tags for a single image URL
@@ -69,27 +85,59 @@ function exampleTagSingleURL() {
 	var testImageURL = 'http://www.clarifai.com/img/metro-north.jpg';
 	var ourId = "train station 1"; // this is any string that identifies the image to your system
 
-	//Clarifai.setRequestTimeout( 100 ); // in ms - expect: ensure no timeout 
+	// Clarifai.setRequestTimeout( 100 ); // in ms - expect: force a timeout response
+	// Clarifai.setRequestTimeout( 100 ); // in ms - expect: ensure no timeout 
 
 	Clarifai.tagURL( testImageURL , ourId, commonResultHandler );
 }
 
 
-exampleTagSingleURL();
-function callback() {
+// exampleTagMultipleURL() shows how to request the tags for multiple images URLs
+function exampleTagMultipleURL() {
+	var testImageURLs = [ 
+	"http://www.clarifai.com/img/metro-north.jpg", 
+	"http://www.clarifai.com/img/metro-north.jpg" ];
+	var ourIds =  [ "train station 1", 
+	                "train station 2" ]; // this is any string that identifies the image to your system
 
-	var http = require('http')
-	var port = process.env.PORT || 1337;
-	http.createServer(function(req, res) {
-	  	res.writeHead(200, { 'Content-Type': 'text/plain' });
-	  	res.end(display);
-		Clarifai.clearThrottleHandler();
-	}).listen(port);
+	Clarifai.tagURL( testImageURLs , ourIds, commonResultHandler ); 
+}
+
+// exampleFeedback() shows how to send feedback (add or remove tags) from 
+// a list of docids. Recall that the docid uniquely identifies an image previously
+// presented for tagging to one of the tag methods.
+function exampleFeedback() {
+// these are docids that just happen to be in the database right now. this test should get 
+// upgraded to tag images and use the returned docids.
+var docids = [
+	"15512461224882630000",
+	"9549283504682293000"
+	];
+	var addTags = [
+	"addTag1",
+	"addTag2"
+	];
+	Clarifai.feedbackAddTagsToDocids( docids, addTags, null, function( err, res ) {
+		if( opts["print-results"] ) {
+			console.log( res );
+		};
+	} );
+
+	var removeTags = [
+	"removeTag1",
+	"removeTag2"
+	];
+	Clarifai.feedbackRemoveTagsFromDocids( docids, removeTags, null, function( err, res ) {
+		if( opts["print-results"] ) {
+			console.log( res );
+		};
+	} );
 }
 
 
-// images:
-// "http://www.clarifai.com/img/metro-north.jpg";
-// http://i.imgur.com/mGafnMa.png
-// http://gallery.photo.net/photo/3204336-lg.jpg
-// http://gallery.photo.net/photo/3204337-lg.jpg
+exampleTagSingleURL();
+exampleTagMultipleURL();
+exampleFeedback();
+
+Clarifai.clearThrottleHandler();
+
