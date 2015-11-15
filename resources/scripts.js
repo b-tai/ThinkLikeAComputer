@@ -84,10 +84,12 @@ function handleGuess(word, playerNumber) {
 				playerOneRoundScore += playerTwoRoundScore;
 				playerOnePermanentScore += playerOneRoundScore;
 				playerTwoRoundScore = 0;
-				alert('Success! Player 1 wins with ' + playerOneRoundScore + 'points!');
+				document.getElementById("p1pts").innerHTML = playerOneRoundScore;
+				document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
+				alert('Success! Player 1 wins with ' + playerOneRoundScore + ' points!');
 			} else {
 				playerTwoPermanentScore += playerTwoRoundScore;
-				alert('The steal fails! Player 2 wins with ' + playerTwoRoundScore + 'points!');
+				alert('The steal fails! Player 2 wins with ' + playerTwoRoundScore + ' points!');
 			}
 
 			//clearRound();
@@ -99,7 +101,7 @@ function handleGuess(word, playerNumber) {
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerOnePermanentScore += playerOneRoundScore;
-					alert('Player 1 wins with ' + playerOneRoundScore + 'points!');
+					alert('Player 1 wins with ' + playerOneRoundScore + ' points!');
 					//clearRound();
 				}
 			} else {
@@ -122,10 +124,12 @@ function handleGuess(word, playerNumber) {
 				playerTwoRoundScore += playerOneRoundScore;
 				playerTwoPermanentScore += playerTwoRoundScore;
 				playerOneRoundScore = 0;
-				alert('Success! Player 2 wins with ' + playerTwoRoundScore + 'points!');
+				document.getElementById("p1pts").innerHTML = playerOneRoundScore;
+				document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
+				alert('Success! Player 2 wins with ' + playerTwoRoundScore + ' points!');
 			} else {
 				playerOnePermanentScore += playerOneRoundScore;
-				alert('The steal fails! Player 1 wins with ' + playerOneRoundScore + 'points!');
+				alert('The steal fails! Player 1 wins with ' + playerOneRoundScore + ' points!');
 			}
 
 			//clearRound();
@@ -137,7 +141,7 @@ function handleGuess(word, playerNumber) {
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerTwoPermanentScore += playerTwoRoundScore;
-					alert('Player 2 wins with ' + playerTwoRoundScore + 'points!');
+					alert('Player 2 wins with ' + playerTwoRoundScore + ' points!');
 					//clearRound();
 				}
 			} else {
