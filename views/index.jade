@@ -1,0 +1,24 @@
+html
+	head
+		title!= title
+		link(rel='stylesheet', href='/styles.css')
+	body
+		h1!= title
+		p Welcome to "Can you think like a computer?"!  This is a two player game.  First, Player 1 will be presented with a picture and will have to guess the most probable tags associated with the photo.  The higher the probability, the more points Player 1 will rack up.  Then, once guessing wrong 3 times, if Player 2 can guess one of the tags Player 1 missed, he/she receives all the points Player 1 accumulated for that picture!  The next round Player 1 and 2 switch rolls. And so on!  Have fun!
+	img(src!=imageUrl)
+	table
+		tr.p1
+			td Player 1
+			td 0 Pts
+			td
+				input(type=text, name=p1input) 
+			td
+				button#p1Button(type=p1button) Submit
+		tr.p2
+			td Player 2
+			td 0 Pts
+			td
+				input(type=text, name=p1input) 
+			td 
+				button#p2Button(type=p2button) Submit
+	<script type="text/javascript" src="/scripts.js"></script>

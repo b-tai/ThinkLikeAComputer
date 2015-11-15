@@ -1,3 +1,12 @@
+var express = require('express');
+var app = express();
+app.set('views', './views');
+app.set('view engine', 'jade');
+app.use(express.static('resources'));
+app.get('/', function(req,res) {
+	res.render('index', {title: 'Think Like a Computer', imageUrl: "http://i.imgur.com/mGafnMa.png"});
+});
+
 var display = "";
 var Clarifai = require('./clarifai_node.js');
 var clientID = "Ujn2c65_Y-9-FyZRNDg5GTew2n6g5apT1DGh8BX-";
@@ -90,8 +99,6 @@ function exampleTagSingleURL() {
 	var testImageURL = 'https://lh3.googleusercontent.com/-xlXLYPjhRKE/VH-pLDYTXpI/AAAAAAAAIY8/5WpXe-gfY2I/w640-h360/white-cat-blue-eyes-640x360.jpg';
 	var ourId = "train station 1"; // this is any string that identifies the image to your system
 
-	//Clarifai.setRequestTimeout( 100 ); // in ms - expect: ensure no timeout 
-
 	Clarifai.tagURL( testImageURL , ourId, commonResultHandler );
 }
 
@@ -99,7 +106,6 @@ function exampleTagSingleURL() {
 exampleTagSingleURL();
 
 function callback() {
-
 	var http = require('http')
 	var port = process.env.PORT || 1337;
 	http.createServer(function(req, res) {
@@ -109,6 +115,12 @@ function callback() {
 	}).listen(port);
 }
 
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
 
 // images:
 // "http://www.clarifai.com/img/metro-north.jpg"; --- train station
