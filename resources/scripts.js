@@ -57,15 +57,16 @@ function handleGuess(word, playerNumber) {
 	console.log(scoreOfLatestGuess);
 
 	if (playerNumber == 1) {
-
 		if (playerTwoStrikes == 3) { // opportunity to steal
 			if (scoreOfLatestGuess > 0) { // successful steal
 				playerOneRoundScore += scoreOfLatestGuess;
 				playerOneRoundScore += playerTwoRoundScore;
 				playerOnePermanentScore += playerOneRoundScore;
-				playerTwoRoundScore = 0; 
+				playerTwoRoundScore = 0;
+				alert('Success! Player 1 wins with ' + playerOneRoundScore + 'points!');
 			} else {
 				playerTwoPermanentScore += playerTwoRoundScore;
+				alert('The steal fails! Player 2 wins with ' + playerTwoRoundScore + 'points!');
 			}
 
 			//clearRound();
@@ -75,9 +76,9 @@ function handleGuess(word, playerNumber) {
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
 
-
 				if (correctGuessesThisRound == totalAnswers) {
 					playerOnePermanentScore += playerOneRoundScore;
+					alert('Player 1 wins with ' + playerOneRoundScore + 'points!');
 					//clearRound();
 				}
 			} else {
@@ -87,21 +88,23 @@ function handleGuess(word, playerNumber) {
 
 				if (playerOneStrikes == 3) {
 					currentPlayer = 2;
+					alert('Player 2 has the chance to steal!');
 				}
 			}
 		}
 	}
 
 	if (playerNumber == 2) {
-		
 		if (playerOneStrikes == 3) { // opportunity to steal
 			if (scoreOfLatestGuess > 0) { // successful steal
 				playerTwoRoundScore += scoreOfLatestGuess;
 				playerTwoRoundScore += playerOneRoundScore;
 				playerTwoPermanentScore += playerTwoRoundScore;
-				playerOneRoundScore = 0; 
+				playerOneRoundScore = 0;
+				alert('Success! Player 2 wins with ' + playerTwoRoundScore + 'points!');
 			} else {
 				playerOnePermanentScore += playerOneRoundScore;
+				alert('The steal fails! Player 1 wins with ' + playerOneRoundScore + 'points!');
 			}
 
 			//clearRound();
@@ -113,6 +116,7 @@ function handleGuess(word, playerNumber) {
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerTwoPermanentScore += playerTwoRoundScore;
+					alert('Player 2 wins with ' + playerTwoRoundScore + 'points!');
 					//clearRound();
 				}
 			} else {
@@ -121,6 +125,7 @@ function handleGuess(word, playerNumber) {
 				document.getElementById("wrong").innerHTML = strikes;
 				if (playerTwoStrikes == 3) {
 					currentPlayer = 1;
+					alert('Player 1 has the chance to steal!');
 				}
 			}
 		}

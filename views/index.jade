@@ -5,7 +5,10 @@ html
 		link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Arvo')
 	body
 		h1!= title
-		p This is a two player game.  Try to guess as many of the tags the computer generates for the image as possible!  Points are based on the higher probabilities for the tags. Have fun!
+		p Welcome to Think Like a Computer, a two-player game in the style of Family Feud!
+		p First, determine who will be Player 1, the starting player. Player 1 tries to guess all the tags that the computer associates with the image below, with points based on the degree of association assigned by Clarifai's image recognition algorithm.
+		p If Player 1 can get the top 5 tags before guessing wrong 3 times, Player 1 gets to keep all of his or her points. But if he or she gets to 3 strikes first, Player 2 has the chance to guess one of the remaining tags to steal all of Player 1's points!
+		p Remember: think like a computer, and have fun!
 
 	br
 	img(src!=imageUrl)
