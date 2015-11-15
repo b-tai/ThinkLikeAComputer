@@ -8,7 +8,7 @@ var playerTwoPermanentScore = 0;
 var playerOneStrikes = 0;
 var playerTwoStrikes = 0;
 var scoreOfLatestGuess = 0;
-var totalAnswers = 0;
+var totalAnswers = 5;
 var correctGuessesThisRound = 0;
 var currentRound = 0;
 var currentPlayer = 1;
@@ -58,12 +58,17 @@ function setVisibilityOfPlayerActions() {
 		document.getElementById('p1input').focus();
 		document.getElementById('p2Button').style.visibility = "hidden";
 		document.getElementById('p2input').style.visibility = "hidden";
-	} else {
+	} else if (currentPlayer == 2) {
 		document.getElementById('p1Button').style.visibility = "hidden";
 		document.getElementById('p1input').style.visibility = "hidden";
 		document.getElementById('p2Button').style.visibility = "visible";
 		document.getElementById('p2input').style.visibility = "visible";
 		document.getElementById('p2input').focus();
+	} else {
+		document.getElementById('p1Button').style.visibility = "hidden";
+		document.getElementById('p1input').style.visibility = "hidden";
+		document.getElementById('p2Button').style.visibility = "hidden";
+		document.getElementById('p2input').style.visibility = "hidden";
 	}
 }
 
@@ -84,11 +89,14 @@ function handleGuess(word, playerNumber) {
 				playerOneRoundScore += playerTwoRoundScore;
 				playerOnePermanentScore += playerOneRoundScore;
 				playerTwoRoundScore = 0;
+				document.getElementById(wordsToElementId[word]).style.visibility = "visible";
 				document.getElementById("p1pts").innerHTML = playerOneRoundScore;
 				document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
+				currentPlayer = 0;
 				alert('Success! Player 1 wins with ' + playerOneRoundScore + ' points!');
 			} else {
 				playerTwoPermanentScore += playerTwoRoundScore;
+				currentPlayer = 0;
 				alert('The steal fails! Player 2 wins with ' + playerTwoRoundScore + ' points!');
 			}
 
@@ -98,9 +106,11 @@ function handleGuess(word, playerNumber) {
 				playerOneRoundScore += scoreOfLatestGuess;
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
+				document.getElementById(wordsToElementId[word]).style.visibility = "visible";
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerOnePermanentScore += playerOneRoundScore;
+					currentPlayer = 0;
 					alert('Player 1 wins with ' + playerOneRoundScore + ' points!');
 					//clearRound();
 				}
@@ -124,11 +134,14 @@ function handleGuess(word, playerNumber) {
 				playerTwoRoundScore += playerOneRoundScore;
 				playerTwoPermanentScore += playerTwoRoundScore;
 				playerOneRoundScore = 0;
+				document.getElementById(wordsToElementId[word]).style.visibility = "visible";
 				document.getElementById("p1pts").innerHTML = playerOneRoundScore;
 				document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
+				currentPlayer = 0;
 				alert('Success! Player 2 wins with ' + playerTwoRoundScore + ' points!');
 			} else {
 				playerOnePermanentScore += playerOneRoundScore;
+				currentPlayer = 0;
 				alert('The steal fails! Player 1 wins with ' + playerOneRoundScore + ' points!');
 			}
 
@@ -138,9 +151,11 @@ function handleGuess(word, playerNumber) {
 				playerTwoRoundScore += scoreOfLatestGuess;
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
+				document.getElementById(wordsToElementId[word]).style.visibility = "visible";
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerTwoPermanentScore += playerTwoRoundScore;
+					currentPlayer = 0;
 					alert('Player 2 wins with ' + playerTwoRoundScore + ' points!');
 					//clearRound();
 				}
