@@ -11,7 +11,7 @@ var scoreOfLatestGuess = 0;
 var totalAnswers = 0;
 var correctGuessesThisRound = 0;
 var currentRound = 0;
-var currentPlayer = 0;
+var currentPlayer = 1;
 
 window.onload = function() {
 	for (i = 1; i <= 5; i++) {
@@ -22,25 +22,48 @@ window.onload = function() {
 		wordsToElementId[ithTag] = 'word' + i;
 	}
 
-
 	document.getElementById('p1Button').onclick = function() {
-		if (currentPlayer == 0) {
-			currentPlayer = 1;
-		}
-
-		if (currentPlayer == 1) {
-			handleGuess(document.getElementById('p1input').value, 1);
+		var input = document.getElementById('p1input').value;
+		if (currentPlayer == 1 && input != '') {
+			handleGuess(input, 1);
 		}
 	}
 
 	document.getElementById('p2Button').onclick = function() {
-		if (currentPlayer == 0) {
-			currentPlayer = 2;
+		var input = document.getElementById('p2input').value;
+		if (currentPlayer == 2 && input != '') {
+			handleGuess(input, 2);
 		}
+	}
 
-		if (currentPlayer == 2) {
-			handleGuess(document.getElementById('p2input').value, 2);
-		}
+	$("#p1input").keyup(function(event){
+    	if(event.keyCode == 13){
+        	$("#p1Button").click();
+    	}
+	});
+
+	$("#p2input").keyup(function(event){
+	    if(event.keyCode == 13){
+	        $("#p2Button").click();
+	    }
+	});
+
+	setVisibilityOfPlayerActions();
+}
+
+function setVisibilityOfPlayerActions() {
+	if (currentPlayer == 1) {
+		document.getElementById('p1Button').style.visibility = "visible";
+		document.getElementById('p1input').style.visibility = "visible";
+		document.getElementById('p1input').focus();
+		document.getElementById('p2Button').style.visibility = "hidden";
+		document.getElementById('p2input').style.visibility = "hidden";
+	} else {
+		document.getElementById('p1Button').style.visibility = "hidden";
+		document.getElementById('p1input').style.visibility = "hidden";
+		document.getElementById('p2Button').style.visibility = "visible";
+		document.getElementById('p2input').style.visibility = "visible";
+		document.getElementById('p2input').focus();
 	}
 }
 
@@ -54,10 +77,7 @@ function handleGuess(word, playerNumber) {
 
 	scoreOfLatestGuess = parseInt(scoreOfLatestGuess);
 
-	console.log(scoreOfLatestGuess);
-
 	if (playerNumber == 1) {
-
 		if (playerTwoStrikes == 3) { // opportunity to steal
 			if (scoreOfLatestGuess > 0) { // successful steal
 				playerOneRoundScore += scoreOfLatestGuess;
@@ -93,7 +113,7 @@ function handleGuess(word, playerNumber) {
 	}
 
 	if (playerNumber == 2) {
-		
+
 		if (playerOneStrikes == 3) { // opportunity to steal
 			if (scoreOfLatestGuess > 0) { // successful steal
 				playerTwoRoundScore += scoreOfLatestGuess;
@@ -126,8 +146,11 @@ function handleGuess(word, playerNumber) {
 		}
 	}
 
+	setVisibilityOfPlayerActions();
 	document.getElementById("p1pts").innerHTML = playerOneRoundScore;
 	document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
+	document.getElementById("p1input").value = "";
+	document.getElementById("p2input").value = "";
 }
 
 function clearRound() {
