@@ -1,11 +1,13 @@
 body {
+	margin-top: 20px;
 	font-family: 'Arvo', serif;
 	text-align: center;
 	width: 960px;
+	background-color: #bcd2d0;
 }
 
 h1 {
-	color: #6666FF;
+	color: #F96161;
 }
 
 img {
@@ -13,8 +15,19 @@ img {
 }
 
 table {
-	width: 75%;
+	height: 10%;
+	width: 60%;
 	text-align: center;
+	background-color: #e1e9b7;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+input {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 
 table.center {
@@ -28,4 +41,18 @@ table.center {
 
 #wrong {
 	color: red;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+ol{
+   display: inline-block;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+h2 {
+	margin: 0px;
 }

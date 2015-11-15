@@ -7,9 +7,9 @@ html
 		h1!= title
 		p This is a two player game.  Try to guess as many of the tags the computer generates for the image as possible!  Points are based on the higher probabilities for the tags. Have fun!
 
-	img(src!=imageUrl)
-
 	br
+	img(src!=imageUrl)
+	h2#wrong 
 	br
 
 	table.center
@@ -25,16 +25,14 @@ html
 			td.p2pts 0
 			td
 				input(type=text, name=p2input) 
-			td 
+			td
 				button#p2Button(type=button) Submit
 
 	ol#words
-		li#1!= word1
-		li#2!= word2
-		li#3!= word3
-		li#4!= word4
-		li#5!= word5
-
-	h2#wrong
+		li.hidden#one!= word1
+		li.hidden#two!= word2
+		li.hidden#three!= word3
+		li.hidden#four!= word4
+		li.hidden#five!= word5
 
 	<script type="text/javascript" src="/scripts.js"></script>
