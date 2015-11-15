@@ -3,7 +3,25 @@ var Clarifai = require('./clarifai_node.js');
 var clientID = "Ujn2c65_Y-9-FyZRNDg5GTew2n6g5apT1DGh8BX-";
 var clientSecret = "DoOB5xDgVAcZqxuL1M2kXDaulw_sw6LwzY_Qcip8";
 var tagsToScores = {};
+var playerOneRoundScore = 0;
+var playerTwoRoundScore = 0;
+var playerOnePermanentScore = 0;
+var playerTwoPermanentScore = 0;
+var playerOneStrikes = 0;
+var playerTwoStrikes = 0;
 var scoreOfLatestGuess = 0;
+var totalAnswers = 0;
+var correctGuessesThisRound = 0;
+var currentRound = 0;
+var images = [
+	'http://www.keenthemes.com/preview/metronic/theme/assets/global/plugins/jcrop/demos/demo_files/image1.jpg', // fallen leaf
+	'http://www.clarifai.com/img/metro-north.jpg', // train station
+	'http://vapable.com/wp-content/uploads/2013/08/raspberry-flavour-e-liquid.jpg', // raspberries
+	'http://gallery.photo.net/photo/3204337-lg.jpg', // owl
+	'https://lh3.googleusercontent.com/-xlXLYPjhRKE/VH-pLDYTXpI/AAAAAAAAIY8/5WpXe-gfY2I/w640-h360/white-cat-blue-eyes-640x360.jpg', // kitty!
+	'http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg' // movie poster for Up
+];
+
 Clarifai.initAPI(clientID, clientSecret);
 
 // Setting a throttle handler lets you know when the service is unavailable because of throttling. It will let
@@ -54,6 +72,7 @@ function commonResultHandler( err, res ) {
 
 							if (score >= 5) {
 								tagsToScores[res["results"][i].result["tag"]["classes"][j]] = score;
+								totalAnswers++;
 							}
 						}
 
@@ -67,15 +86,26 @@ function commonResultHandler( err, res ) {
 					}
 				}
 
-				getScoreOfGuess("cat");
-				getScoreOfGuess("nonsenseXYZ"); // expect 0
+				handleGuess("cat", 1);
+				handleGuess("nonsenseXYZ", 2); // expect 0
 
 			}		
 	}
 	callback();
 }
 
-function getScoreOfGuess(word) {
+function newRound() {
+	playerOneRoundScore = 0;
+	playerTwoRoundScore = 0;
+	playerOneStrikes = 0;
+	playerTwoStrikes = 0;
+	correctGuessesThisRound = 0;
+	totalAnswers = 0;
+	tagsToScores = {};
+	currentRound = (currentRound + 1) % images.length;
+}
+
+function handleGuess(word, playerNumber) {
 	scoreOfLatestGuess = tagsToScores[word];
 
 	if (scoreOfLatestGuess === undefined) {
@@ -83,6 +113,62 @@ function getScoreOfGuess(word) {
 	}
 
 	console.log(scoreOfLatestGuess);
+
+	if (playerNumber == 1) {
+		if (playerTwoStrikes == 3) { // opportunity to steal
+			if (scoreOfLatestGuess > 0) { // successful steal
+				playerOneRoundScore += scoreOfLatestGuess;
+				playerOneRoundScore += playerTwoRoundScore;
+				playerOnePermanentScore += playerOneRoundScore;
+			} else {
+				playerTwoPermanentScore += playerTwoRoundScore;
+			}
+
+			newRound();
+		} else { // normal play
+			if (scoreOfLatestGuess > 0) {
+				playerOneRoundScore += scoreOfLatestGuess;
+				correctGuessesThisRound++;
+				tagsToScores[word] = 0;
+
+				if (correctGuessesThisRound == totalAnswers) {
+					playerOnePermanentScore += playerOneRoundScore;
+
+					newRound();
+				}
+			} else {
+				playerOneStrikes++;
+			}
+		}
+	}
+
+	if (playerNumber == 2) {
+		if (playerOneStrikes == 3) { // opportunity to steal
+			if (scoreOfLatestGuess > 0) { // successful steal
+				playerTwoRoundScore += scoreOfLatestGuess;
+				playerTwoRoundScore += playerOneRoundScore;
+				playerTwoPermanentScore += playerTwoRoundScore;
+			} else {
+				playerOnePermanentScore += playerOneRoundScore;
+			}
+
+			newRound();
+		} else { // normal play
+			if (scoreOfLatestGuess > 0) {
+				playerTwoRoundScore += scoreOfLatestGuess;
+				correctGuessesThisRound++;
+				tagsToScores[word] = 0;
+
+				if (correctGuessesThisRound == totalAnswers) {
+					playerTwoPermanentScore += playerTwoRoundScore;
+
+					newRound();
+				}
+			} else {
+				playerTwoStrikes++;
+			}
+		}
+	}
 }
 
 // exampleTagSingleURL() shows how to request the tags for a single image URL
@@ -108,12 +194,3 @@ function callback() {
 		Clarifai.clearThrottleHandler();
 	}).listen(port);
 }
-
-
-// images:
-// "http://www.clarifai.com/img/metro-north.jpg"; --- train station
-// http://i.imgur.com/mGafnMa.png --- collage
-// http://gallery.photo.net/photo/3204336-lg.jpg --- dark room (not a very good image for this purpose)
-// http://gallery.photo.net/photo/3204337-lg.jpg --- owl
-// https://lh3.googleusercontent.com/-xlXLYPjhRKE/VH-pLDYTXpI/AAAAAAAAIY8/5WpXe-gfY2I/w640-h360/white-cat-blue-eyes-640x360.jpg --- cat
-// http://vapable.com/wp-content/uploads/2013/08/raspberry-flavour-e-liquid.jpg --- raspberries
