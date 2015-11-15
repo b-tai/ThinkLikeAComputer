@@ -11,17 +11,7 @@ var display = "";
 var Clarifai = require('./clarifai_node.js');
 var clientID = "Ujn2c65_Y-9-FyZRNDg5GTew2n6g5apT1DGh8BX-";
 var clientSecret = "DoOB5xDgVAcZqxuL1M2kXDaulw_sw6LwzY_Qcip8";
-var tagsToScores = {};
-var playerOneRoundScore = 0;
-var playerTwoRoundScore = 0;
-var playerOnePermanentScore = 0;
-var playerTwoPermanentScore = 0;
-var playerOneStrikes = 0;
-var playerTwoStrikes = 0;
-var scoreOfLatestGuess = 0;
-var totalAnswers = 0;
-var correctGuessesThisRound = 0;
-var currentRound = 0;
+
 var images = [
 	'http://www.keenthemes.com/preview/metronic/theme/assets/global/plugins/jcrop/demos/demo_files/image1.jpg', // fallen leaf
 	'http://www.clarifai.com/img/metro-north.jpg', // train station
@@ -76,13 +66,11 @@ function commonResultHandler( err, res ) {
 							sumOfInverseUnideductedProbabilities += 1 / (1 - res["results"][i].result["tag"]["probs"][j]);
 						}
 
-						for (j = 0; j < numTags; j++) {
+						for (j = 0; j < 5; j++) {
 							var score = Math.round(100 / (1 - res["results"][i].result["tag"]["probs"][j]) / sumOfInverseUnideductedProbabilities);
 
-							if (score >= 5) {
-								tagsToScores[res["results"][i].result["tag"]["classes"][j]] = score;
-								totalAnswers++;
-							}
+							tagsToScores[res["results"][i].result["tag"]["classes"][j]] = score;
+							totalAnswers++;
 						}
 
 						console.log(tagsToScores);
@@ -95,94 +83,18 @@ function commonResultHandler( err, res ) {
 					}
 				}
 
-				handleGuess("cat", 1);
-				handleGuess("nonsenseXYZ", 2); // expect 0
-
-			}		
+				// handleGuess("cat", 1);
+				// handleGuess("nonsenseXYZ", 2); // expect 0
+			}
 	}
+
 	callback();
 }
 
-function newRound() {
-	playerOneRoundScore = 0;
-	playerTwoRoundScore = 0;
-	playerOneStrikes = 0;
-	playerTwoStrikes = 0;
-	correctGuessesThisRound = 0;
-	totalAnswers = 0;
-	tagsToScores = {};
-	currentRound = (currentRound + 1) % images.length;
-}
-
-function handleGuess(word, playerNumber) {
-	scoreOfLatestGuess = tagsToScores[word];
-
-	if (scoreOfLatestGuess === undefined) {
-		scoreOfLatestGuess = 0;
-	}
-
-	console.log(scoreOfLatestGuess);
-
-	if (playerNumber == 1) {
-		if (playerTwoStrikes == 3) { // opportunity to steal
-			if (scoreOfLatestGuess > 0) { // successful steal
-				playerOneRoundScore += scoreOfLatestGuess;
-				playerOneRoundScore += playerTwoRoundScore;
-				playerOnePermanentScore += playerOneRoundScore;
-			} else {
-				playerTwoPermanentScore += playerTwoRoundScore;
-			}
-
-			newRound();
-		} else { // normal play
-			if (scoreOfLatestGuess > 0) {
-				playerOneRoundScore += scoreOfLatestGuess;
-				correctGuessesThisRound++;
-				tagsToScores[word] = 0;
-
-				if (correctGuessesThisRound == totalAnswers) {
-					playerOnePermanentScore += playerOneRoundScore;
-
-					newRound();
-				}
-			} else {
-				playerOneStrikes++;
-			}
-		}
-	}
-
-	if (playerNumber == 2) {
-		if (playerOneStrikes == 3) { // opportunity to steal
-			if (scoreOfLatestGuess > 0) { // successful steal
-				playerTwoRoundScore += scoreOfLatestGuess;
-				playerTwoRoundScore += playerOneRoundScore;
-				playerTwoPermanentScore += playerTwoRoundScore;
-			} else {
-				playerOnePermanentScore += playerOneRoundScore;
-			}
-
-			newRound();
-		} else { // normal play
-			if (scoreOfLatestGuess > 0) {
-				playerTwoRoundScore += scoreOfLatestGuess;
-				correctGuessesThisRound++;
-				tagsToScores[word] = 0;
-
-				if (correctGuessesThisRound == totalAnswers) {
-					playerTwoPermanentScore += playerTwoRoundScore;
-
-					newRound();
-				}
-			} else {
-				playerTwoStrikes++;
-			}
-		}
-	}
-}
 
 // exampleTagSingleURL() shows how to request the tags for a single image URL
 function exampleTagSingleURL() {
-	var testImageURL = 'https://lh3.googleusercontent.com/-xlXLYPjhRKE/VH-pLDYTXpI/AAAAAAAAIY8/5WpXe-gfY2I/w640-h360/white-cat-blue-eyes-640x360.jpg';
+	var testImageURL = images[Math.floor((Math.random() * images.length))];
 	var ourId = "train station 1"; // this is any string that identifies the image to your system
 
 	Clarifai.tagURL( testImageURL , ourId, commonResultHandler );
@@ -207,11 +119,3 @@ var server = app.listen(3000, function () {
 
   console.log('Example app listening at http://%s:%s', host, port);
 });
-
-// images:
-// "http://www.clarifai.com/img/metro-north.jpg"; --- train station
-// http://i.imgur.com/mGafnMa.png --- collage
-// http://gallery.photo.net/photo/3204336-lg.jpg --- dark room (not a very good image for this purpose)
-// http://gallery.photo.net/photo/3204337-lg.jpg --- owl
-// https://lh3.googleusercontent.com/-xlXLYPjhRKE/VH-pLDYTXpI/AAAAAAAAIY8/5WpXe-gfY2I/w640-h360/white-cat-blue-eyes-640x360.jpg --- cat
-// http://vapable.com/wp-content/uploads/2013/08/raspberry-flavour-e-liquid.jpg --- raspberries
