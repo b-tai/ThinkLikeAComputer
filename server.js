@@ -10,6 +10,7 @@ var images = [
 var words = [];
 var scores = [];
 var tagsToScores = {};
+var imageLink = images[Math.floor((Math.random() * images.length))];
 
 var express = require('express');
 var app = express();
@@ -19,7 +20,7 @@ app.use(express.static('resources'));
 app.get('/', function(req,res) {
 	res.render('index', {
 		title: 'Think Like a Computer',
-		imageUrl: images[Math.floor((Math.random() * images.length))],
+		imageUrl: imageLink,
 		word1: words[0] + ', ' + scores[0],
 		word2: words[1] + ', ' + scores[1],
 		word3: words[2] + ', ' + scores[2],
@@ -108,7 +109,7 @@ function commonResultHandler( err, res ) {
 
 // exampleTagSingleURL() shows how to request the tags for a single image URL
 function exampleTagSingleURL() {
-	var testImageURL = images[Math.floor((Math.random() * images.length))];
+	var testImageURL = imageLink;
 	var ourId = "train station 1"; // this is any string that identifies the image to your system
 
 	Clarifai.tagURL( testImageURL , ourId, commonResultHandler );

@@ -1,10 +1,6 @@
-var tagsToScores = {
-	document.getElementById('word1').split[", "][0] : document.getElementById('word1').split[", "][1],
-	document.getElementById('word2').split[", "][0] : document.getElementById('word2').split[", "][1],
-	document.getElementById('word3').split[", "][0] : document.getElementById('word3').split[", "][1],
-	document.getElementById('word4').split[", "][0] : document.getElementById('word4').split[", "][1],
-	document.getElementById('word5').split[", "][0] : document.getElementById('word5').split[", "][1]
-};
+var tagsToScores = {};
+var wordsToElementId = {};
+
 var playerOneRoundScore = 0;
 var playerTwoRoundScore = 0;
 var playerOnePermanentScore = 0;
@@ -18,13 +14,22 @@ var currentRound = 0;
 var currentPlayer = 0;
 
 window.onload = function() {
+	for (i = 1; i <= 5; i++) {
+		var ithTag = document.getElementById('word' + i).innerHTML.split(", ")[0];
+		var ithScore = document.getElementById('word' + i).innerHTML.split(", ")[1];
+
+		tagsToScores[ithTag] = ithScore;
+		wordsToElementId[ithTag] = 'word' + i;
+	}
+
+
 	document.getElementById('p1Button').onclick = function() {
 		if (currentPlayer == 0) {
 			currentPlayer = 1;
 		}
 
 		if (currentPlayer == 1) {
-			handleGuess(document.getElementById(p1input)), 1);
+			handleGuess(document.getElementById('p1input').innerHTML, 1);
 		}
 	}
 
@@ -34,7 +39,7 @@ window.onload = function() {
 		}
 
 		if (currentPlayer == 2) {
-			handleGuess(document.getElementById(p2input)), 2);
+			handleGuess(document.getElementById('p2input').innerHTML, 2);
 		}
 	}
 }
