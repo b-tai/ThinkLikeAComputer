@@ -1,17 +1,3 @@
-var express = require('express');
-var app = express();
-app.set('views', './views');
-app.set('view engine', 'jade');
-app.use(express.static('resources'));
-app.get('/', function(req,res) {
-	res.render('index', {title: 'Think Like a Computer', imageUrl: "http://i.imgur.com/mGafnMa.png"});
-});
-
-var display = "";
-var Clarifai = require('./clarifai_node.js');
-var clientID = "Ujn2c65_Y-9-FyZRNDg5GTew2n6g5apT1DGh8BX-";
-var clientSecret = "DoOB5xDgVAcZqxuL1M2kXDaulw_sw6LwzY_Qcip8";
-
 var images = [
 	'http://www.keenthemes.com/preview/metronic/theme/assets/global/plugins/jcrop/demos/demo_files/image1.jpg', // fallen leaf
 	'http://www.clarifai.com/img/metro-north.jpg', // train station
@@ -20,6 +6,32 @@ var images = [
 	'https://lh3.googleusercontent.com/-xlXLYPjhRKE/VH-pLDYTXpI/AAAAAAAAIY8/5WpXe-gfY2I/w640-h360/white-cat-blue-eyes-640x360.jpg', // kitty!
 	'http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg' // movie poster for Up
 ];
+
+var words = [];
+var scores = [];
+var tagsToScores = {};
+
+var express = require('express');
+var app = express();
+app.set('views', './views');
+app.set('view engine', 'jade');
+app.use(express.static('resources'));
+app.get('/', function(req,res) {
+	res.render('index', {
+		title: 'Think Like a Computer',
+		imageUrl: images[Math.floor((Math.random() * images.length))],
+		word1: words[0] + ', ' + scores[0],
+		word2: words[1] + ', ' + scores[1],
+		word3: words[2] + ', ' + scores[2],
+		word4: words[3] + ', ' + scores[3],
+		word5: words[4] + ', ' + scores[4]
+	});
+});
+
+var display = "";
+var Clarifai = require('./clarifai_node.js');
+var clientID = "Ujn2c65_Y-9-FyZRNDg5GTew2n6g5apT1DGh8BX-";
+var clientSecret = "DoOB5xDgVAcZqxuL1M2kXDaulw_sw6LwzY_Qcip8";
 
 Clarifai.initAPI(clientID, clientSecret);
 
@@ -69,8 +81,10 @@ function commonResultHandler( err, res ) {
 						for (j = 0; j < 5; j++) {
 							var score = Math.round(100 / (1 - res["results"][i].result["tag"]["probs"][j]) / sumOfInverseUnideductedProbabilities);
 
+							words[j] = res["results"][i].result["tag"]["classes"][j];
+							scores[j] = score;
+
 							tagsToScores[res["results"][i].result["tag"]["classes"][j]] = score;
-							totalAnswers++;
 						}
 
 						console.log(tagsToScores);
@@ -104,18 +118,14 @@ function exampleTagSingleURL() {
 exampleTagSingleURL();
 
 function callback() {
-	var http = require('http')
-	var port = process.env.PORT || 1337;
-	http.createServer(function(req, res) {
-	  	res.writeHead(200, { 'Content-Type': 'text/plain' });
-	  	res.end(display);
-		Clarifai.clearThrottleHandler();
-	}).listen(port);
+	var server = app.listen(3000, function () {
+	  	var host = server.address().address;
+	  	var port = server.address().port;
+
+	  	console.log('Example app listening at http://%s:%s', host, port);
+	});
 }
 
-var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
-});
+
+// Clarifai.clearThrottleHandler();

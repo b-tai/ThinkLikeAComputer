@@ -1,4 +1,10 @@
-var tagsToScores = {};
+var tagsToScores = {
+	document.getElementById('word1').split[", "][0] : document.getElementById('word1').split[", "][1],
+	document.getElementById('word2').split[", "][0] : document.getElementById('word2').split[", "][1],
+	document.getElementById('word3').split[", "][0] : document.getElementById('word3').split[", "][1],
+	document.getElementById('word4').split[", "][0] : document.getElementById('word4').split[", "][1],
+	document.getElementById('word5').split[", "][0] : document.getElementById('word5').split[", "][1]
+};
 var playerOneRoundScore = 0;
 var playerTwoRoundScore = 0;
 var playerOnePermanentScore = 0;
@@ -9,14 +15,27 @@ var scoreOfLatestGuess = 0;
 var totalAnswers = 0;
 var correctGuessesThisRound = 0;
 var currentRound = 0;
+var currentPlayer = 0;
 
 window.onload = function() {
-	document.getElementById('p1Button').onclick = function(){
-		alert("button clicked!");
+	document.getElementById('p1Button').onclick = function() {
+		if (currentPlayer == 0) {
+			currentPlayer = 1;
+		}
+
+		if (currentPlayer == 1) {
+			handleGuess(document.getElementById(p1input)), 1);
+		}
 	}
 
-	document.getElementById('p2Button').onclick = function(){
-		alert("button clicked! 2");
+	document.getElementById('p2Button').onclick = function() {
+		if (currentPlayer == 0) {
+			currentPlayer = 2;
+		}
+
+		if (currentPlayer == 2) {
+			handleGuess(document.getElementById(p2input)), 2);
+		}
 	}
 }
 
@@ -39,7 +58,7 @@ function handleGuess(word, playerNumber) {
 				playerTwoPermanentScore += playerTwoRoundScore;
 			}
 
-			newRound();
+			clearRound();
 		} else { // normal play
 			if (scoreOfLatestGuess > 0) {
 				playerOneRoundScore += scoreOfLatestGuess;
@@ -48,11 +67,14 @@ function handleGuess(word, playerNumber) {
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerOnePermanentScore += playerOneRoundScore;
-
-					newRound();
+					clearRound();
 				}
 			} else {
 				playerOneStrikes++;
+
+				if (playerOneStrikes == 3) {
+					currentPlayer = 2;
+				}
 			}
 		}
 	}
@@ -67,7 +89,7 @@ function handleGuess(word, playerNumber) {
 				playerOnePermanentScore += playerOneRoundScore;
 			}
 
-			newRound();
+			clearRound();
 		} else { // normal play
 			if (scoreOfLatestGuess > 0) {
 				playerTwoRoundScore += scoreOfLatestGuess;
@@ -76,17 +98,20 @@ function handleGuess(word, playerNumber) {
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerTwoPermanentScore += playerTwoRoundScore;
-
-					newRound();
+					clearRound();
 				}
 			} else {
 				playerTwoStrikes++;
+
+				if (playerTwoStrikes == 3) {
+					currentPlayer = 1;
+				}
 			}
 		}
 	}
 }
 
-function newRound() {
+function clearRound() {
 	playerOneRoundScore = 0;
 	playerTwoRoundScore = 0;
 	playerOneStrikes = 0;
@@ -95,4 +120,5 @@ function newRound() {
 	totalAnswers = 0;
 	tagsToScores = {};
 	currentRound++;
+	currentPlayer = 0;
 }
