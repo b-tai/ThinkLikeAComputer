@@ -5,6 +5,7 @@ var tagsToScores = {
 	document.getElementById('word4').split[", "][0] : document.getElementById('word4').split[", "][1],
 	document.getElementById('word5').split[", "][0] : document.getElementById('word5').split[", "][1]
 };
+
 var playerOneRoundScore = 0;
 var playerTwoRoundScore = 0;
 var playerOnePermanentScore = 0;
@@ -39,6 +40,7 @@ window.onload = function() {
 	}
 }
 
+var strikes = "";
 function handleGuess(word, playerNumber) {
 	scoreOfLatestGuess = tagsToScores[word];
 
@@ -62,8 +64,10 @@ function handleGuess(word, playerNumber) {
 		} else { // normal play
 			if (scoreOfLatestGuess > 0) {
 				playerOneRoundScore += scoreOfLatestGuess;
+				document.getElementById("p1pts").innerHTML = playerOneRoundScore;
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
+
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerOnePermanentScore += playerOneRoundScore;
@@ -71,6 +75,8 @@ function handleGuess(word, playerNumber) {
 				}
 			} else {
 				playerOneStrikes++;
+				strikes = strikes + "X ";
+				document.getElementById("wrong").innerHTML = strikes;
 
 				if (playerOneStrikes == 3) {
 					currentPlayer = 2;
@@ -93,6 +99,7 @@ function handleGuess(word, playerNumber) {
 		} else { // normal play
 			if (scoreOfLatestGuess > 0) {
 				playerTwoRoundScore += scoreOfLatestGuess;
+				document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
 
@@ -102,7 +109,8 @@ function handleGuess(word, playerNumber) {
 				}
 			} else {
 				playerTwoStrikes++;
-
+				strikes = strikes + "X ";
+				document.getElementById("wrong").innerHTML = strikes;
 				if (playerTwoStrikes == 3) {
 					currentPlayer = 1;
 				}
