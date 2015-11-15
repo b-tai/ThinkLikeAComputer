@@ -6,7 +6,7 @@ html
 	body
 		h1!= title
 		p Welcome to Think Like a Computer, a two-player game in the style of Family Feud!
-		p First, determine who will be Player 1, the starting player. Player 1 tries to guess all the tags that the computer associates with the image below, with points based on the degree of association assigned by Clarifai's image recognition algorithm.
+		p First, determine who will be Player 1, the starting player. Player 1 tries to guess all the tags that the computer associates with the image below (randomly selected from an image library on server startup), with points based on the degree of association assigned by Clarifai's image recognition algorithm.
 		p If Player 1 can get the top 5 tags before guessing wrong 3 times, Player 1 gets to keep all of his or her points. But if he or she gets to 3 strikes first, Player 2 has the chance to guess one of the remaining tags to steal all of Player 1's points!
 		p Remember: think like a computer, and have fun!
 
@@ -38,4 +38,6 @@ html
 		li.hidden#word4!= word4
 		li.hidden#word5!= word5
 
+
+	<script type="text/javascript" src="/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="/scripts.js"></script>
