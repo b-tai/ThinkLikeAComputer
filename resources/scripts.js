@@ -29,7 +29,7 @@ window.onload = function() {
 		}
 
 		if (currentPlayer == 1) {
-			handleGuess(document.getElementById('p1input').innerHTML, 1);
+			handleGuess(document.getElementById('p1input').value, 1);
 		}
 	}
 
@@ -39,7 +39,7 @@ window.onload = function() {
 		}
 
 		if (currentPlayer == 2) {
-			handleGuess(document.getElementById('p2input').innerHTML, 2);
+			handleGuess(document.getElementById('p2input').value, 2);
 		}
 	}
 }
