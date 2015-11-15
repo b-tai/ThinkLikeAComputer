@@ -1,0 +1,26 @@
+{
+  "name": "thinklikeacomputer",
+  "version": "1.0.0",
+  "description": "Uses the Clarifai API in a game ",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "jade": "^1.11.0",
+    "stdio": "^0.2.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b-tai/ThinkLikeAComputer.git"
+  },
+  "author": "Angela Ma, Beverly Tai, Dan Wang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/b-tai/ThinkLikeAComputer/issues"
+  },
+  "homepage": "https://github.com/b-tai/ThinkLikeAComputer#readme"
+}
