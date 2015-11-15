@@ -52,30 +52,33 @@ function handleGuess(word, playerNumber) {
 		scoreOfLatestGuess = 0;
 	}
 
+	scoreOfLatestGuess = parseInt(scoreOfLatestGuess);
+
 	console.log(scoreOfLatestGuess);
 
 	if (playerNumber == 1) {
+
 		if (playerTwoStrikes == 3) { // opportunity to steal
 			if (scoreOfLatestGuess > 0) { // successful steal
 				playerOneRoundScore += scoreOfLatestGuess;
 				playerOneRoundScore += playerTwoRoundScore;
 				playerOnePermanentScore += playerOneRoundScore;
+				playerTwoRoundScore = 0; 
 			} else {
 				playerTwoPermanentScore += playerTwoRoundScore;
 			}
 
-			clearRound();
+			//clearRound();
 		} else { // normal play
 			if (scoreOfLatestGuess > 0) {
 				playerOneRoundScore += scoreOfLatestGuess;
-				document.getElementById("p1pts").innerHTML = playerOneRoundScore;
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
 
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerOnePermanentScore += playerOneRoundScore;
-					clearRound();
+					//clearRound();
 				}
 			} else {
 				playerOneStrikes++;
@@ -90,26 +93,27 @@ function handleGuess(word, playerNumber) {
 	}
 
 	if (playerNumber == 2) {
+		
 		if (playerOneStrikes == 3) { // opportunity to steal
 			if (scoreOfLatestGuess > 0) { // successful steal
 				playerTwoRoundScore += scoreOfLatestGuess;
 				playerTwoRoundScore += playerOneRoundScore;
 				playerTwoPermanentScore += playerTwoRoundScore;
+				playerOneRoundScore = 0; 
 			} else {
 				playerOnePermanentScore += playerOneRoundScore;
 			}
 
-			clearRound();
+			//clearRound();
 		} else { // normal play
 			if (scoreOfLatestGuess > 0) {
 				playerTwoRoundScore += scoreOfLatestGuess;
-				document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
 				correctGuessesThisRound++;
 				tagsToScores[word] = 0;
 
 				if (correctGuessesThisRound == totalAnswers) {
 					playerTwoPermanentScore += playerTwoRoundScore;
-					clearRound();
+					//clearRound();
 				}
 			} else {
 				playerTwoStrikes++;
@@ -121,6 +125,9 @@ function handleGuess(word, playerNumber) {
 			}
 		}
 	}
+
+	document.getElementById("p1pts").innerHTML = playerOneRoundScore;
+	document.getElementById("p2pts").innerHTML = playerTwoRoundScore;
 }
 
 function clearRound() {
