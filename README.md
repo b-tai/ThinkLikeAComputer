@@ -1,1 +1,2 @@
 # HackHarvard
+ThinkLikeAComputer is a two-player game in the style of Family Feud. We use the Clarifai API to assign weighted tags associated to a randomly selected image that is displayed in-game. The players then have to think about how a VR algorithm, the titular "computer", perceives the image (and are scored accordingly), so in a manner of speaking, the game is ultimately an exercise in a sort of empathy.
